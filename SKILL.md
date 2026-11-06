@@ -1,11 +1,11 @@
 ---
 name: sing-box-reality-apple
-description: 在 Ubuntu VPS 部署、更新或排查 sing-box VLESS + Reality + Vision，为桌面和手机客户端生成兼容配置，默认使用苹果域名作为 Reality 握手目标。适用于自建代理安装和配置，不用于单纯选购服务器。
+description: 在 Linux VPS 部署、更新或排查 sing-box VLESS + Reality + Vision，为桌面和手机客户端生成兼容配置，默认使用苹果域名作为 Reality 握手目标。适用于自建代理安装和配置，不用于单纯选购服务器。
 ---
 
 # sing-box Reality Apple
 
-将用户授权的 Ubuntu VPS 配置为 VLESS + Reality + Vision 服务端，并交付与实际客户端版本匹配的配置及连接验证结果。默认系统为 Ubuntu 24.04；其他系统先核对官方支持。
+将用户授权的 Linux VPS 配置为 VLESS + Reality + Vision 服务端，并交付与实际客户端版本匹配的配置及连接验证结果。不预设发行版或系统版本；先识别实际环境，再核对官方支持与安装方式。非 Linux 服务端先确认官方支持和可行路径，不能套用 Linux 命令。
 
 ## 工作边界与输入
 
@@ -46,13 +46,13 @@ description: 在 Ubuntu VPS 部署、更新或排查 sing-box VLESS + Reality + 
 
 ## 部署流程
 
-1. **检查并备份。** 检查系统架构、权限、现有 sing-box 及启动参数、端口占用、防火墙、时间同步。备份将修改的文件和相关规则，记录恢复路径。
+1. **检查并备份。** 通过 `/etc/os-release`、`uname -m` 等只读检查识别发行版、版本、CPU 架构，检查包管理器、实际 init/服务管理方式、权限、现有 sing-box 及启动参数、端口占用、防火墙、时间同步。备份将修改的文件和相关规则，记录恢复路径。
 2. **测试苹果目标。** 从 VPS 检查 `www.apple.com:443` 的可达性、证书、SNI、TLS 1.3，并按当前 Reality 文档核对适用条件。可用 curl 和 openssl，但 HTTP 成功不足以证明 Reality 可用。失败先定位原因。
-3. **安装。** 使用官方来源；如采用安装脚本，先下载核对来源及内容，再运行。记录 `sing-box version`。
+3. **安装。** 根据实际系统和架构选择官方支持的软件包、二进制或用户已有的容器部署方式，不默认使用 apt，也不自动改成容器部署。不支持或已停止维护的系统先报告限制及可行选项，不擅自升级或重装操作系统。如采用安装脚本，先下载核对来源及内容，再运行。记录 `sing-box version`。
 4. **生成身份参数。** 首次安装使用 `sing-box generate uuid`、`sing-box generate reality-keypair`、`sing-box generate rand --hex 8`。保存到受限位置，不在终端回显、聊天或日志中泄露私钥。已有部署优先复用参数。
-5. **写入服务端。** 默认使用 `/etc/sing-box/config.json`，VLESS 入站、Reality 与 Vision、direct 出站。文件权限应限制其他用户读取，同时允许实际服务用户读取。检查 systemd 实际加载的配置路径。
-6. **检查再启动。** 先执行 `sing-box check -c /etc/sing-box/config.json`，通过后可用 `sing-box format -w -c /etc/sing-box/config.json` 格式化，再设置开机启动并启动或重启。检查状态、监听端口、近期日志。失败时不反复盲目重启，应修复或恢复备份。
-7. **处理防火墙。** 按下方规则保留 SSH，再放行服务端监听端口，检查供应商安全组。已有防火墙保持其管理方式，不同时引入冲突工具。
+5. **写入服务端。** 按安装方式与实际启动参数确认配置路径，常见路径为 `/etc/sing-box/config.json`，VLESS 入站、Reality 与 Vision、direct 出站。文件权限应限制其他用户读取，同时允许实际服务用户读取。检查实际服务管理器或容器加载的配置路径、挂载和服务用户，不假定存在 systemd。
+6. **检查再启动。** 使用实际配置路径执行 `sing-box check -c <配置路径>`，通过后可用 `sing-box format -w -c <配置路径>` 格式化。按实际服务管理方式（例如 systemd、OpenRC 或已有容器编排）设置自动启动并启动或重启，不在无 systemd 的系统上使用 systemctl/journalctl。检查状态、监听端口、近期日志。失败时不反复盲目重启，应修复或恢复备份。
+7. **处理防火墙。** 按下方规则保留 SSH，再放行服务端监听端口，检查供应商安全组。识别 UFW、firewalld、nftables/iptables 或供应商防火墙；已有防火墙保持其管理方式，不默认安装 UFW，不同时引入冲突工具。
 8. **生成客户端并实测。** 按下方规则交付对应版本 JSON，在真实客户端验证连接和分流。
 
 ### 防止 SSH 断连

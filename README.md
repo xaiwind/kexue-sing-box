@@ -1,8 +1,8 @@
 # sing-box-reality-apple
 
-供 AI 编程助手使用的中文 Skill：在 Ubuntu VPS 部署 **VLESS + Reality + Vision**，默认以 **www.apple.com** 为 Reality 握手目标，并按实际客户端内核版本生成配置。
+供 AI 编程助手使用的中文 Skill：在 Linux VPS 部署 **VLESS + Reality + Vision**，默认以 **www.apple.com** 为 Reality 握手目标，并按实际客户端内核版本生成配置。
 
-这是部署工作流，不是已执行的一键脚本。它要求助手核对官方文档、保留 SSH 连接、检查配置并完成真实连接测试；不会绑定旧教程的软件版本。
+这是部署工作流，不是已执行的一键脚本。它要求助手核对官方文档、保留 SSH 连接、检查配置并完成真实连接测试；不会绑定 Ubuntu 24.04 或旧教程的软件版本。具体系统是否可用，以官方支持和实际环境检测为准。
 
 ## 安装与使用
 
@@ -11,9 +11,10 @@
 调用示例：
 
 ```text
-使用 $sing-box-reality-apple，帮我在已有 Ubuntu 24.04 VPS 上部署
+使用 $sing-box-reality-apple，帮我在已有 VPS 上部署
 sing-box VLESS + Reality + Vision，Reality 目标使用 www.apple.com。
-客户端是 macOS 和 iOS。先检查环境与版本，再安装并生成配置。
+客户端是 macOS 和 iOS。先识别服务器系统、架构和服务管理方式，
+再按官方支持情况安装并生成配置。
 ```
 
 也可以要求只生成配置、检查已有部署或逐步指导操作。SSH 登录信息通过本地安全方式提供，不把密码和私钥发到聊天里。
